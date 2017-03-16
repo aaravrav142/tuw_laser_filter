@@ -1,5 +1,5 @@
 // this should really be in the implementation (.cpp file)
-#include <tuw_laser_line_detection/tuw_laser_line_detection_nodelet.h>
+#include <tuw_laser_line_detection/tuw_laser_line_ht_nodelet.h>
 #include <tuw_geometry_msgs/LineSegment.h>
 #include <tuw_geometry_msgs/LineSegments.h>
 #include <pluginlib/class_list_macros.h>
@@ -10,39 +10,29 @@
 #include <regex>
 
 // watch the capitalization carefully
-PLUGINLIB_EXPORT_CLASS ( tuw_laser_line_detection::LaserLineDetectionNodelet, nodelet::Nodelet )
+PLUGINLIB_EXPORT_CLASS ( tuw_laser_line_detection::LaserLineHTNodelet, nodelet::Nodelet )
 
-
-// Update the input string.
-void autoExpandEnvironmentVariables ( std::string & text ) {
-    static std::regex env ( "\\$\\{([^}]+)\\}" );
-    std::smatch match;
-    while ( std::regex_search ( text, match, env ) ) {
-        const char * s = getenv ( match[1].str().c_str() );
-        const std::string var ( s == NULL ? "" : s );
-        text.replace ( match[0].first, match[0].second, var );
-    }
-}
 
 namespace tuw_laser_line_detection {
-void LaserLineDetectionNodelet::onInit() {
-    NODELET_DEBUG ( "Initializing nodelet..." );
+void LaserLineHTNodelet::onInit() {
+    NODELET_INFO ( "Initializing nodelet LaserLineHTNodelet..." );
     private_nh_ = getNodeHandle();
     /// subscribes to laser
-    sub_laser_ = private_nh_.subscribe ( "scan", 1, &LaserLineDetectionNodelet::callbackLaser, this );
+    sub_laser_ = private_nh_.subscribe ( "scan", 1, &LaserLineHTNodelet::callbackLaser, this );
 
-    reconfigureFnc_ = boost::bind ( &LaserLineDetectionNodelet::callbackReconfigure, this,  _1, _2 );
+    reconfigureFnc_ = boost::bind ( &LaserLineHTNodelet::callbackReconfigure, this,  _1, _2 );
     reconfigureServer_.setCallback ( reconfigureFnc_ );
     line_pub_ = private_nh_.advertise<tuw_geometry_msgs::LineSegments> ( "line_segments", 1000 );
 }
 
 
-void LaserLineDetectionNodelet::callbackReconfigure ( tuw_laser_line_detection::LaserLineDetectionConfig &config, uint32_t level ) {
-    NODELET_DEBUG ( "callbackReconfigure LaserLineDetectionConfig!" );
+void LaserLineHTNodelet::callbackReconfigure ( tuw_laser_line_detection::LaserLineHTConfig &config, uint32_t level ) {
+    NODELET_DEBUG ( "callbackReconfigure LaserLineHTConfig!" );
     config_ = config;
 }
 
-void LaserLineDetectionNodelet::callbackLaser ( const sensor_msgs::LaserScan& input_scan){
+void LaserLineHTNodelet::callbackLaser ( const sensor_msgs::LaserScan& input_scan ) {
+    NODELET_DEBUG ( "callbackLaser LaserLineHTNodelet!" );
     using namespace cv;
     size_t nr =  input_scan.ranges.size();
     double scale = config_.scan_pixel_resolution;

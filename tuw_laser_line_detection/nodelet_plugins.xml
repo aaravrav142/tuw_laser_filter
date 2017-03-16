@@ -1,5 +1,10 @@
 <library path="lib/libtuw_laser_line_detection_nodelet">
-  <class name="tuw_laser_line_detection/tuw_laser_line_detection_nodelet" type="tuw_laser_line_detection::LaserLineDetectionNodelet" base_class_type="nodelet::Nodelet">
+  <class name="tuw_laser_line_detection/tuw_laser_line_ht" type="tuw_laser_line_detection::LaserLineHTNodelet" base_class_type="nodelet::Nodelet">
+  <description>
+  This is my nodelet.
+  </description>
+  </class>
+  <class name="tuw_laser_line_detection/tuw_laser_line_sm" type="tuw_laser_line_detection::LaserLineSMNodelet" base_class_type="nodelet::Nodelet">
   <description>
   This is my nodelet.
   </description>

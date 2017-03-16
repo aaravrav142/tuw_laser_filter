@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   dynamic_reconfigure
   cv_bridge
+  tuw_geometry
   tuw_geometry_msgs
 )
 
@@ -93,7 +94,8 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
 generate_dynamic_reconfigure_options(
-  cfg/LaserLineDetection.cfg
+  cfg/LaserLineHT.cfg
+  cfg/LaserLineSM.cfg
 )
 
 ###################################
@@ -126,7 +128,8 @@ include_directories(
 
 ## Declare a C++ library
 add_library(tuw_laser_line_detection_nodelet
-   src/tuw_laser_line_detection_nodelet.cpp
+   src/tuw_laser_line_ht_nodelet.cpp
+   src/tuw_laser_line_sm_nodelet.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -135,20 +138,25 @@ add_library(tuw_laser_line_detection_nodelet
 # add_dependencies(tuw_laser_line_detection ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(tuw_laser_line_detection_node src/tuw_laser_line_detection_node.cpp)
+add_executable(tuw_laser_line_ht_node src/tuw_laser_line_ht_node.cpp)
+add_executable(tuw_laser_line_sm_node src/tuw_laser_line_sm_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(tuw_laser_line_detection_nodelet ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(tuw_laser_line_detection_node
+target_link_libraries(tuw_laser_line_ht_node
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(tuw_laser_line_sm_node
   ${catkin_LIBRARIES}
 )
 
 target_link_libraries(tuw_laser_line_detection_nodelet
   ${catkin_LIBRARIES}
 )
+
 
 #############
 ## Install ##
@@ -165,7 +173,7 @@ target_link_libraries(tuw_laser_line_detection_nodelet
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS tuw_laser_line_detection_node tuw_laser_line_detection_nodelet
+install(TARGETS tuw_laser_line_detection_nodelet tuw_laser_line_ht_node  tuw_laser_line_sm_node 
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

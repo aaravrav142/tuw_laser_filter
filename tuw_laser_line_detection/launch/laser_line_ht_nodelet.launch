@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="scan" default="base_scan" />
+  <node pkg="nodelet" type="nodelet" name="standalone_nodelet"  args="manager" output="screen"/>
+
+  <node pkg="nodelet" type="nodelet" name="LaserLineHTNodelet" args="load tuw_laser_line_detection/tuw_laser_line_ht standalone_nodelet" output="screen">
+      <remap from="scan" to="$(arg scan)"/>   
+  </node>                 
+</launch>
