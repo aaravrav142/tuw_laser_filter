@@ -24,7 +24,7 @@ public:
     tuw::MeasurementLaserPtr measurement_laser_;  /// laser measurements
     std::vector<tuw::Point2D> measurement_local_scanpoints_; /// laser beam endpoints for line detection
     std::vector<tuw::LineSegment2D> measurement_linesegments_;    /// detected line segments in sensor coordinates
-    void callbackLaser ( const sensor_msgs::LaserScan& );   /// callback function to execute on incoming sensor data
+    void callbackLaser (const sensor_msgs::LaserScan::ConstPtr& );   /// callback function to execute on incoming sensor data
       
     dynamic_reconfigure::Server<tuw_laser_line_detection::LaserLineSMConfig> reconfigureServer_; /// parameter server 
     dynamic_reconfigure::Server<tuw_laser_line_detection::LaserLineSMConfig>::CallbackType reconfigureFnc_; /// parameter server stuff general use

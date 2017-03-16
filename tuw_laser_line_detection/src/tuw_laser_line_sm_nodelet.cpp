@@ -38,17 +38,17 @@ void LaserLineSMNodelet::callbackReconfigure ( tuw_laser_line_detection::LaserLi
   line_detector_.config_.min_points_per_unit = config.line_dection_min_points_per_unit;
 }
 
-void LaserLineSMNodelet::callbackLaser ( const sensor_msgs::LaserScan& _laser ) {
+void LaserLineSMNodelet::callbackLaser ( const sensor_msgs::LaserScan::ConstPtr& input_scan ) {
     NODELET_INFO ( "callbackLaser LaserLineSMNodelet!" );
-    int nr = ( _laser.angle_max - _laser.angle_min ) / _laser.angle_increment;
-    measurement_laser_->range_max() = _laser.range_max;
-    measurement_laser_->range_min() = _laser.range_min;
+    int nr = ( input_scan->angle_max - input_scan->angle_min ) / input_scan->angle_increment;
+    measurement_laser_->range_max() = input_scan->range_max;
+    measurement_laser_->range_min() = input_scan->range_min;
     measurement_laser_->resize ( nr );
-    measurement_laser_->stamp() = _laser.header.stamp.toBoost();
+    measurement_laser_->stamp() = input_scan->header.stamp.toBoost();
     for ( int i = 0; i < nr; i++ ) {
         tuw::MeasurementLaser::Beam& beam = measurement_laser_->operator[] ( i );
-        beam.length = _laser.ranges[i];
-        beam.angle = _laser.angle_min + ( _laser.angle_increment * i );
+        beam.length = input_scan->ranges[i];
+        beam.angle = input_scan->angle_min + ( input_scan->angle_increment * i );
         beam.end_point.x() = cos ( beam.angle ) * beam.length;
         beam.end_point.y() = sin ( beam.angle ) * beam.length;
     }
@@ -73,7 +73,7 @@ void LaserLineSMNodelet::callbackLaser ( const sensor_msgs::LaserScan& _laser ) 
         line_segments_msg.segments.push_back ( line_segment_msg );
     }
     // set header information
-    line_segments_msg.header = _laser.header;
+    line_segments_msg.header = input_scan->header;
 
     line_pub_.publish ( line_segments_msg );
 }

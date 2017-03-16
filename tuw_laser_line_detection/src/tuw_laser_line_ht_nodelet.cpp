@@ -31,21 +31,21 @@ void LaserLineHTNodelet::callbackReconfigure ( tuw_laser_line_detection::LaserLi
     config_ = config;
 }
 
-void LaserLineHTNodelet::callbackLaser ( const sensor_msgs::LaserScan& input_scan ) {
+void LaserLineHTNodelet::callbackLaser ( const sensor_msgs::LaserScan::ConstPtr& input_scan ) {
     NODELET_DEBUG ( "callbackLaser LaserLineHTNodelet!" );
     using namespace cv;
-    size_t nr =  input_scan.ranges.size();
+    size_t nr =  input_scan->ranges.size();
     double scale = config_.scan_pixel_resolution;
-    double width = scale * ( input_scan.range_max * 2.1 );
+    double width = scale * ( input_scan->range_max * 2.1 );
     double center = width/2;
     img_scan_.create ( width, width, CV_8U );
     img_scan_.setTo ( 0 );
     cv::Point p;
     for ( size_t i = 0; i < nr; i++ ) {
-        double length = input_scan.ranges[i];
+        double length = input_scan->ranges[i];
 
-        if ( ( length < input_scan.range_max ) && std::isfinite ( length ) ) {
-            double angle  = input_scan.angle_min + ( input_scan.angle_increment * i );
+        if ( ( length < input_scan->range_max ) && std::isfinite ( length ) ) {
+            double angle  = input_scan->angle_min + ( input_scan->angle_increment * i );
             p.x = round ( -cos ( angle ) * length * scale + center );
             p.y = round ( -sin ( angle ) * length * scale + center );
             img_scan_.at<uchar> ( p.x, p.y ) = 255;
@@ -101,7 +101,7 @@ void LaserLineHTNodelet::callbackLaser ( const sensor_msgs::LaserScan& input_sca
         line_segments_msg.segments.push_back ( line_segment_msg );
     }
     // set header information
-    line_segments_msg.header = input_scan.header;
+    line_segments_msg.header = input_scan->header;
 
     line_pub_.publish ( line_segments_msg );
 }

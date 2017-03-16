@@ -23,7 +23,7 @@ public:
     ros::Publisher line_pub_;
     cv::Mat img_scan_;
     cv::Mat img_lines_;
-    void callbackLaser ( const sensor_msgs::LaserScan& );   /// callback function to execute on incoming sensor data
+    void callbackLaser ( const sensor_msgs::LaserScan::ConstPtr& );   /// callback function to execute on incoming sensor data
       
     tuw_laser_line_detection::LaserLineHTConfig config_;
     dynamic_reconfigure::Server<tuw_laser_line_detection::LaserLineHTConfig> reconfigureServer_; /// parameter server 
